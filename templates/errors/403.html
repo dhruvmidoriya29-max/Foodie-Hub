@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Access Denied - FoodieHub{% endblock %}
+{% block content %}
+<div class="fh-error-page">
+  <div>
+    <div class="fh-error-code">403</div>
+    <h3 class="mb-2">Kitchen's staff only beyond this point.</h3>
+    <p class="text-muted mb-4">You don't have permission to access this page.</p>
+    <a href="{{ url_for('index') }}" class="fh-btn fh-btn-primary">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

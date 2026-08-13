@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Checkout - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-section">
+  <div class="container">
+    <div class="mb-4">
+      <span class="fh-eyebrow">Step 2 of 2</span>
+      <h2 class="mb-0">Checkout</h2>
+    </div>
+
+    <form method="POST" action="{{ url_for('checkout') }}" novalidate>
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="fh-panel mb-4">
+            <div class="fh-panel-head"><h5><i class="fa-solid fa-location-dot me-2" style="color:var(--fh-chili);"></i>Delivery Details</h5></div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="name" value="{{ name }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" name="phone" value="{{ phone }}" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Delivery Address</label>
+                <textarea class="form-control" name="address" rows="2" required>{{ address }}</textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" value="{{ city }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Pincode</label>
+                <input type="text" class="form-control" name="pincode" value="{{ pincode }}" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="fh-panel">
+            <div class="fh-panel-head"><h5><i class="fa-solid fa-wallet me-2" style="color:var(--fh-chili);"></i>Payment Method</h5></div>
+            <p class="text-muted" style="font-size:0.85rem;"><i class="fa-solid fa-circle-info me-1"></i>This is a demo project &mdash; no real payment will be processed.</p>
+
+            <div class="d-flex flex-column gap-2">
+              <label class="fh-panel d-flex align-items-center gap-3" style="padding:1rem; cursor:pointer;">
+                <input type="radio" name="payment_method" value="cod" checked>
+                <i class="fa-solid fa-money-bill-wave" style="color:var(--fh-basil);"></i>
+                <div>
+                  <div class="fw-bold" style="font-size:0.92rem;">Cash on Delivery</div>
+                  <div class="text-muted" style="font-size:0.8rem;">Pay when your order arrives</div>
+                </div>
+              </label>
+              <label class="fh-panel d-flex align-items-center gap-3" style="padding:1rem; cursor:pointer;">
+                <input type="radio" name="payment_method" value="upi">
+                <i class="fa-solid fa-mobile-screen-button" style="color:#2A6FA8;"></i>
+                <div>
+                  <div class="fw-bold" style="font-size:0.92rem;">Demo UPI</div>
+                  <div class="text-muted" style="font-size:0.8rem;">Simulated UPI payment (demo only)</div>
+                </div>
+              </label>
+              <label class="fh-panel d-flex align-items-center gap-3" style="padding:1rem; cursor:pointer;">
+                <input type="radio" name="payment_method" value="card">
+                <i class="fa-solid fa-credit-card" style="color:var(--fh-chili);"></i>
+                <div>
+                  <div class="fw-bold" style="font-size:0.92rem;">Demo Card</div>
+                  <div class="text-muted" style="font-size:0.8rem;">Simulated card payment (demo only)</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="fh-summary-card">
+            <h5 style="font-family:var(--fh-font-display); margin-bottom:1.25rem;">Order Summary</h5>
+            <div style="max-height:220px; overflow-y:auto;" class="mb-3">
+              {% for ci in cart_items %}
+              <div class="d-flex justify-content-between mb-2" style="font-size:0.87rem;">
+                <span>{{ ci.food.name }} <span class="text-muted">&times;{{ ci.quantity }}</span></span>
+                <span>&#8377;{{ '%.2f'|format(ci.subtotal) }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="fh-summary-row"><span>Subtotal</span><span>&#8377;{{ '%.2f'|format(summary.subtotal) }}</span></div>
+            <div class="fh-summary-row"><span>Delivery Fee</span><span>&#8377;{{ '%.2f'|format(summary.delivery_fee) }}</span></div>
+            <div class="fh-summary-row"><span>Tax (5%)</span><span>&#8377;{{ '%.2f'|format(summary.tax) }}</span></div>
+            <div class="fh-summary-row total"><span>Total</span><span>&#8377;{{ '%.2f'|format(summary.total) }}</span></div>
+            <button type="submit" class="fh-btn fh-btn-primary fh-btn-block mt-3">
+              <i class="fa-solid fa-lock me-1"></i> Place Order
+            </button>
+            <a href="{{ url_for('cart') }}" class="fh-btn fh-btn-ghost fh-btn-block mt-2">Back to Cart</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

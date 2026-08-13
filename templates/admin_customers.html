@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Customers - FoodieHub Admin{% endblock %}
+
+{% block content %}
+<div class="row g-0">
+  <div class="col-lg-2">
+    {% include 'partials/admin_sidebar.html' %}
+  </div>
+  <div class="col-lg-10">
+    <div class="container-fluid py-4 px-4">
+      <div class="mb-4">
+        <span class="fh-eyebrow">User management</span>
+        <h2 class="mb-0">Registered Customers</h2>
+      </div>
+
+      <div class="fh-panel">
+        {% if customer_data %}
+        <div class="table-responsive">
+          <table class="table fh-table mb-0">
+            <thead>
+              <tr><th>Customer</th><th>Contact</th><th>City</th><th>Orders</th><th>Total Spent</th><th>Joined</th></tr>
+            </thead>
+            <tbody>
+              {% for cd in customer_data %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fh-avatar" style="width:34px; height:34px; font-size:0.9rem;">{{ cd.user.name[0]|upper }}</span>
+                    <span class="fw-bold">{{ cd.user.name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div>{{ cd.user.email }}</div>
+                  <div class="text-muted" style="font-size:0.76rem;">{{ cd.user.phone }}</div>
+                </td>
+                <td>{{ cd.user.city or '—' }}</td>
+                <td>{{ cd.order_count }}</td>
+                <td>&#8377;{{ '%.2f'|format(cd.total_spent) }}</td>
+                <td>{{ cd.user.created_at.strftime('%d %b %Y') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="fh-empty-state">
+          <i class="fa-solid fa-users"></i>
+          <h5>No customers registered yet</h5>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

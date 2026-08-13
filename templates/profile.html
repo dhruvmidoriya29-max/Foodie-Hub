@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}My Profile - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-dash-hero">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3">
+      <span class="fh-avatar" style="width:60px; height:60px; font-size:1.5rem;">{{ current_user.name[0]|upper }}</span>
+      <div>
+        <h3 style="color:#fff; margin:0;">{{ current_user.name }}</h3>
+        <p style="color:rgba(251,246,236,0.65); margin:0; font-size:0.88rem;">{{ current_user.email }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fh-section">
+  <div class="container">
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="fh-stat-card">
+          <div class="fh-stat-icon i-1"><i class="fa-solid fa-receipt"></i></div>
+          <div>
+            <div class="fh-stat-num">{{ orders|length }}</div>
+            <div class="fh-stat-label">Total Orders</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="fh-stat-card">
+          <div class="fh-stat-icon i-3"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div>
+            <div class="fh-stat-num">&#8377;{{ '%.0f'|format(total_spent) }}</div>
+            <div class="fh-stat-label">Total Spent</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="fh-stat-card">
+          <div class="fh-stat-icon i-2"><i class="fa-solid fa-calendar-check"></i></div>
+          <div>
+            <div class="fh-stat-num">{{ current_user.created_at.strftime('%b %Y') }}</div>
+            <div class="fh-stat-label">Member Since</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="fh-panel">
+          <div class="fh-panel-head"><h5>Profile Information</h5></div>
+          <form method="POST" action="{{ url_for('profile') }}">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="name" value="{{ current_user.name }}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" name="phone" value="{{ current_user.phone or '' }}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <textarea class="form-control" name="address" rows="2">{{ current_user.address or '' }}</textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" value="{{ current_user.city or '' }}">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Pincode</label>
+                <input type="text" class="form-control" name="pincode" value="{{ current_user.pincode or '' }}">
+              </div>
+            </div>
+            <button type="submit" class="fh-btn fh-btn-primary fh-btn-block">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="fh-panel">
+          <div class="fh-panel-head">
+            <h5>Recent Orders</h5>
+            <a href="{{ url_for('orders') }}" class="fh-btn fh-btn-ghost fh-btn-sm">View All</a>
+          </div>
+          {% if orders %}
+          <div class="table-responsive">
+            <table class="table fh-table mb-0">
+              <thead><tr><th>Order</th><th>Date</th><th>Status</th><th class="text-end">Amount</th></tr></thead>
+              <tbody>
+                {% for order in orders[:5] %}
+                {% set sc = {'Order Placed':'s-placed','Preparing':'s-preparing','Out for Delivery':'s-transit','Delivered':'s-delivered'} %}
+                <tr style="cursor:pointer;" onclick="window.location.href='{{ url_for('order_details', order_number=order.order_number) }}'">
+                  <td style="font-family:var(--fh-font-mono); color:var(--fh-chili);">#{{ order.order_number }}</td>
+                  <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+                  <td><span class="fh-status {{ sc.get(order.status,'s-placed') }}">{{ order.status }}</span></td>
+                  <td class="text-end">&#8377;{{ '%.2f'|format(order.total) }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="fh-empty-state">
+            <i class="fa-solid fa-receipt"></i>
+            <h5>No orders yet</h5>
+            <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-primary mt-2">Order Now</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

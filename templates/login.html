@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Log In - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-auth-wrap">
+  <div class="container">
+    <div class="fh-auth-card">
+      <div class="fh-auth-visual">
+        <span class="fh-eyebrow" style="color:var(--fh-turmeric);">Welcome back</span>
+        <h3>Good food is always worth the wait &mdash; but not with us.</h3>
+        <p>Log in to track your orders, reorder favourites, and manage your saved addresses.</p>
+      </div>
+      <div class="fh-auth-form">
+        <h2>Log In</h2>
+        <p class="sub">Enter your credentials to access your account.</p>
+
+        <form method="POST" action="{{ url_for('login') }}" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+              <button class="btn fh-btn-ghost fh-pw-toggle" type="button" data-target="password" style="border:1px solid var(--fh-line);"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="remember" name="remember">
+              <label class="form-check-label" for="remember" style="font-size:0.88rem;">Remember me</label>
+            </div>
+          </div>
+          <button type="submit" class="fh-btn fh-btn-primary fh-btn-block">Log In</button>
+        </form>
+
+        <div class="fh-demo-box">
+          <strong>Demo Admin:</strong> admin@foodiehub.com / admin123<br>
+          <strong>Demo Customer:</strong> riya@example.com / password123
+        </div>
+
+        <p class="text-center mt-4" style="font-size:0.9rem;">Don't have an account? <a href="{{ url_for('register') }}" style="color:var(--fh-chili); font-weight:700;">Sign Up</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

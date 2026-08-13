@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Menu - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-menu-hero">
+  <div class="container">
+    <span class="fh-eyebrow" style="color:var(--fh-turmeric);">Our full menu</span>
+    <h1 style="color:var(--fh-white); font-size:2.2rem; margin:0.4rem 0 0.4rem;">Explore Our Menu</h1>
+    <p style="color:rgba(251,246,236,0.7); margin:0;">{{ items|length }} dish{{ 'es' if items|length != 1 else '' }} available{% if selected_category != 'all' %} in {{ selected_category }}{% endif %}</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="fh-filter-bar">
+    <form method="get" action="{{ url_for('menu') }}" class="row g-3 align-items-center" id="menuSearchForm">
+      <div class="col-lg-4">
+        <div class="fh-search" style="width:100%;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" name="search" placeholder="Search dishes..." value="{{ search }}">
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="d-flex flex-wrap gap-2">
+          <span class="fh-chip-filter {% if selected_category=='all' %}active{% endif %}" data-category="all">All</span>
+          {% for cat in categories %}
+          <span class="fh-chip-filter {% if selected_category==cat %}active{% endif %}" data-category="{{ cat }}">{{ cat }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <select class="form-select" id="sortSelect">
+          <option value="" {% if not sort %}selected{% endif %}>Sort: Default</option>
+          <option value="price_low" {% if sort=='price_low' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_high" {% if sort=='price_high' %}selected{% endif %}>Price: High to Low</option>
+          <option value="rating" {% if sort=='rating' %}selected{% endif %}>Rating: High to Low</option>
+        </select>
+      </div>
+      <div class="col-lg-2 d-flex align-items-center justify-content-lg-end">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="vegOnlyToggle" {% if veg_only=='1' %}checked{% endif %}>
+          <label class="form-check-label" for="vegOnlyToggle" style="font-size:0.85rem; font-weight:600;">Veg Only</label>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="fh-section">
+    {% if items %}
+    <div class="row g-4">
+      {% for item in items %}
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        {% include 'partials/food_card.html' %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="fh-empty-state">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <h5>No dishes found</h5>
+      <p>Try adjusting your search or filters.</p>
+      <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-primary mt-2">Clear Filters</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}FoodieHub - Order Food Online{% endblock %}
+
+{% block content %}
+
+<!-- ===== Hero ===== -->
+<section class="fh-hero">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <span class="fh-hero-eyebrow"><i class="fa-solid fa-fire"></i> Fresh out of the kitchen, daily</span>
+        <h1>Your next favourite meal is <em>one tap</em> away.</h1>
+        <p class="lead">From sizzling street food to comfort classics — FoodieHub delivers restaurant-quality dishes to your door in under 30 minutes.</p>
+
+        <form class="fh-hero-search" action="{{ url_for('menu') }}" method="get">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" name="search" placeholder="Search 'Butter Chicken', 'Pizza'...">
+          <button type="submit" class="fh-btn fh-btn-primary">Search</button>
+        </form>
+
+        <div class="fh-hero-stats">
+          <div>
+            <div class="stat-num">20+</div>
+            <div class="stat-label">Menu Items</div>
+          </div>
+          <div>
+            <div class="stat-num">7</div>
+            <div class="stat-label">Categories</div>
+          </div>
+          <div>
+            <div class="stat-num">4.6<i class="fa-solid fa-star" style="font-size:1rem;color:var(--fh-turmeric);"></i></div>
+            <div class="stat-label">Avg. Rating</div>
+          </div>
+          <div>
+            <div class="stat-num">28 min</div>
+            <div class="stat-label">Avg. Delivery</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="fh-hero-visual">
+          <div class="fh-hero-plate">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800" alt="Fresh pizza topped with vegetables">
+          </div>
+          <div class="fh-hero-chip top"><i class="fa-solid fa-bolt"></i> 28 min delivery</div>
+          <div class="fh-hero-chip bottom"><i class="fa-solid fa-shield-heart"></i> Freshly prepared</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Categories ===== -->
+<section class="fh-section fh-section-tight">
+  <div class="container">
+    <div class="fh-section-head">
+      <span class="fh-eyebrow">Browse by craving</span>
+      <h2>What are you in the mood for?</h2>
+    </div>
+
+    <div class="fh-category-scroll">
+      {% set icon_map = {
+        'Pizza': 'fa-pizza-slice', 'Burger': 'fa-burger', 'Indian': 'fa-bowl-rice',
+        'Chinese': 'fa-plate-wheat', 'South Indian': 'fa-mortar-pestle',
+        'Desserts': 'fa-ice-cream', 'Beverages': 'fa-mug-hot'
+      } %}
+      {% for cat in categories %}
+      <a href="{{ url_for('menu', category=cat) }}" class="fh-category-card">
+        <div class="icon"><i class="fa-solid {{ icon_map.get(cat, 'fa-utensils') }}"></i></div>
+        <span>{{ cat }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== Popular dishes ===== -->
+<section class="fh-section">
+  <div class="container">
+    <div class="fh-section-head d-flex flex-wrap justify-content-between align-items-end">
+      <div>
+        <span class="fh-eyebrow">Crowd favourites</span>
+        <h2>Popular dishes right now</h2>
+      </div>
+      <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-ghost">View Full Menu <i class="fa-solid fa-arrow-right ms-1"></i></a>
+    </div>
+
+    <div class="row g-4">
+      {% for item in popular %}
+      <div class="col-lg-3 col-md-6">
+        {% include 'partials/food_card.html' %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== Special offers ===== -->
+<section class="fh-section fh-section-tight">
+  <div class="container">
+    <div class="fh-section-head">
+      <span class="fh-eyebrow">Today only</span>
+      <h2>Special offers</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="fh-offer-card offer-1">
+          <span class="fh-eyebrow">Combo deal</span>
+          <h4>Flat 20% off on Pizza combos</h4>
+          <p>Order any 2 pizzas and get a free beverage with your order.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="fh-offer-card offer-2">
+          <span class="fh-eyebrow">First order</span>
+          <h4>Free delivery on your first order</h4>
+          <p>New to FoodieHub? Sign up and enjoy free delivery on your first purchase.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="fh-section">
+  <div class="container">
+    <div class="fh-cta">
+      <span class="fh-eyebrow">Hungry already?</span>
+      <h2>Order now and taste the difference</h2>
+      <p>Join thousands of happy customers enjoying fresh, delicious meals delivered right to their doorstep.</p>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-primary">Order Now</a>
+      {% else %}
+        <a href="{{ url_for('register') }}" class="fh-btn fh-btn-primary">Get Started Free</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

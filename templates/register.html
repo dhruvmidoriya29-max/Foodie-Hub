@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Sign Up - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-auth-wrap">
+  <div class="container">
+    <div class="fh-auth-card">
+      <div class="fh-auth-visual">
+        <span class="fh-eyebrow" style="color:var(--fh-turmeric);">Join FoodieHub</span>
+        <h3>Create an account and start ordering in seconds.</h3>
+        <p>Save your addresses, track orders in real time, and get access to member-only offers.</p>
+      </div>
+      <div class="fh-auth-form">
+        <h2>Create Account</h2>
+        <p class="sub">It only takes a minute to get started.</p>
+
+        <form method="POST" action="{{ url_for('register') }}" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="name">Full name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Riya Sharma" value="{{ name or '' }}" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="email">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" value="{{ email or '' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="phone">Phone number</label>
+              <input type="tel" class="form-control" id="phone" name="phone" placeholder="9876500000" value="{{ phone or '' }}" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Min. 6 characters" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="confirm_password">Confirm password</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+            </div>
+          </div>
+          <button type="submit" class="fh-btn fh-btn-primary fh-btn-block">Create Account</button>
+        </form>
+
+        <p class="text-center mt-4" style="font-size:0.9rem;">Already have an account? <a href="{{ url_for('login') }}" style="color:var(--fh-chili); font-weight:700;">Log In</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

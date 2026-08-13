@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-section" style="background: linear-gradient(180deg, var(--fh-parchment-dim), var(--fh-parchment));">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div style="width:76px; height:76px; border-radius:50%; background:var(--fh-basil); color:#fff; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.2rem;">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2>Order Placed Successfully!</h2>
+      <p class="text-muted">Thank you for your order. Your delicious food is being prepared.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="fh-ticket">
+          <div class="fh-ticket-head">
+            <div class="text-muted" style="font-size:0.72rem; letter-spacing:0.08em;">ORDER NUMBER</div>
+            <div class="fh-order-num">#{{ order.order_number }}</div>
+            <div class="text-muted" style="font-size:0.75rem; margin-top:0.3rem;">{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+          </div>
+
+          {% for oi in order.items %}
+          <div class="fh-ticket-row">
+            <span class="label">{{ oi.food_name }} &times;{{ oi.quantity }}</span>
+            <span>&#8377;{{ '%.2f'|format(oi.subtotal) }}</span>
+          </div>
+          {% endfor %}
+
+          <div class="fh-ticket-divider"></div>
+          <div class="fh-ticket-row"><span class="label">Subtotal</span><span>&#8377;{{ '%.2f'|format(order.subtotal) }}</span></div>
+          <div class="fh-ticket-row"><span class="label">Delivery Fee</span><span>&#8377;{{ '%.2f'|format(order.delivery_fee) }}</span></div>
+          <div class="fh-ticket-row"><span class="label">Tax</span><span>&#8377;{{ '%.2f'|format(order.tax) }}</span></div>
+          <div class="fh-ticket-divider"></div>
+          <div class="fh-ticket-row" style="font-weight:700; font-size:1rem;"><span>Total</span><span>&#8377;{{ '%.2f'|format(order.total) }}</span></div>
+
+          <div class="fh-ticket-divider"></div>
+          <div class="fh-ticket-row"><span class="label">Deliver To</span><span style="text-align:right;">{{ order.customer_name }}</span></div>
+          <div class="fh-ticket-row"><span class="label">Address</span><span style="text-align:right; max-width:60%;">{{ order.address }}, {{ order.city }} - {{ order.pincode }}</span></div>
+          <div class="fh-ticket-row"><span class="label">Payment</span><span style="text-align:right;">
+            {% if order.payment_method == 'cod' %}Cash on Delivery
+            {% elif order.payment_method == 'upi' %}Demo UPI
+            {% else %}Demo Card{% endif %}
+          </span></div>
+        </div>
+
+        <div class="d-flex gap-3 justify-content-center mt-4 flex-wrap">
+          <a href="{{ url_for('order_details', order_number=order.order_number) }}" class="fh-btn fh-btn-primary"><i class="fa-solid fa-truck-fast me-1"></i> Track Order</a>
+          <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-ghost">Order More Food</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

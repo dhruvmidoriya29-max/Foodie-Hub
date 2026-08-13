@@ -1,0 +1,23 @@
+<div class="fh-food-card">
+  <div class="fh-food-img-wrap">
+    <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+    <span class="fh-food-badge">
+      {% if item.is_veg %}<span class="fh-veg-dot"></span> Veg{% else %}<span class="fh-nonveg-dot"></span> Non-Veg{% endif %}
+    </span>
+    <span class="fh-food-rating"><i class="fa-solid fa-star"></i> {{ '%.1f'|format(item.rating) }}</span>
+    {% if not item.is_available %}
+    <div class="fh-food-unavailable">Currently Unavailable</div>
+    {% endif %}
+  </div>
+  <div class="fh-food-body">
+    <div class="fh-food-cat">{{ item.category }}</div>
+    <h5>{{ item.name }}</h5>
+    <p class="fh-food-desc">{{ item.description }}</p>
+    <div class="fh-food-footer">
+      <div class="fh-food-price">&#8377;{{ '%.0f'|format(item.price) }} <small>/ item</small></div>
+      <button class="fh-add-btn" data-food-id="{{ item.id }}" {% if not item.is_available %}disabled{% endif %} title="Add to cart" aria-label="Add {{ item.name }} to cart">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
+  </div>
+</div>

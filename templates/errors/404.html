@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found - FoodieHub{% endblock %}
+{% block content %}
+<div class="fh-error-page">
+  <div>
+    <div class="fh-error-code">404</div>
+    <h3 class="mb-2">This dish isn't on the menu.</h3>
+    <p class="text-muted mb-4">The page you're looking for doesn't exist or may have been moved.</p>
+    <a href="{{ url_for('index') }}" class="fh-btn fh-btn-primary">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

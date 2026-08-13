@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}FoodieHub - Order Food Online{% endblock %}</title>
+<meta name="description" content="FoodieHub - Order delicious food online from the comfort of your home.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap 5 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- ===== Navbar ===== -->
+<nav class="fh-navbar navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="fh-brand navbar-brand" href="{{ url_for('index') }}">
+      <span class="fh-brand-mark"><i class="fa-solid fa-utensils"></i></span>
+      Foodie<span>Hub</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#fhNav" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="fhNav">
+      <ul class="navbar-nav mx-lg-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='index' %}active{% endif %}" href="{{ url_for('index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='menu' %}active{% endif %}" href="{{ url_for('menu') }}">Menu</a></li>
+        {% if current_user.is_authenticated and not current_user.is_admin %}
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='orders' %}active{% endif %}" href="{{ url_for('orders') }}">Orders</a></li>
+        {% endif %}
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin') %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
+        {% endif %}
+      </ul>
+
+      <form class="fh-search d-none d-lg-flex me-3" action="{{ url_for('menu') }}" method="get">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="search" placeholder="Search for dishes..." value="{{ request.args.get('search','') }}">
+      </form>
+
+      <ul class="navbar-nav align-items-lg-center gap-2">
+        {% if current_user.is_authenticated %}
+          {% if not current_user.is_admin %}
+          <li class="nav-item">
+            <a class="fh-cart-link" href="{{ url_for('cart') }}">
+              <i class="fa-solid fa-cart-shopping"></i>
+              {% if cart_count and cart_count > 0 %}<span class="fh-cart-badge">{{ cart_count }}</span>{% endif %}
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle fh-user-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <span class="fh-avatar">{{ current_user.name[0]|upper }}</span>
+              <span class="d-lg-none ms-2">{{ current_user.name }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end fh-dropdown">
+              {% if current_user.is_admin %}
+              <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+              {% else %}
+              <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fa-solid fa-user me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('orders') }}"><i class="fa-solid fa-receipt me-2"></i>My Orders</a></li>
+              {% endif %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="fh-btn fh-btn-ghost" href="{{ url_for('login') }}">Log In</a></li>
+          <li class="nav-item"><a class="fh-btn fh-btn-primary" href="{{ url_for('register') }}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Flash messages ===== -->
+<div class="fh-flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="fh-toast alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          <i class="fa-solid {% if category=='success' %}fa-circle-check{% elif category=='danger' %}fa-circle-exclamation{% elif category=='warning' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %} me-2"></i>
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="fh-footer">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4">
+        <a class="fh-brand fh-brand-footer" href="{{ url_for('index') }}">
+          <span class="fh-brand-mark"><i class="fa-solid fa-utensils"></i></span>
+          Foodie<span>Hub</span>
+        </a>
+        <p class="fh-footer-text">Fresh, fast, and full of flavour &mdash; FoodieHub brings your favourite restaurants straight to your door. Demo project built for showcase purposes.</p>
+        <div class="fh-social">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="fh-footer-heading">Explore</h6>
+        <ul class="fh-footer-links">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('menu') }}">Menu</a></li>
+          <li><a href="{{ url_for('register') }}">Sign Up</a></li>
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="fh-footer-heading">Categories</h6>
+        <ul class="fh-footer-links">
+          <li><a href="{{ url_for('menu', category='Pizza') }}">Pizza</a></li>
+          <li><a href="{{ url_for('menu', category='Burger') }}">Burger</a></li>
+          <li><a href="{{ url_for('menu', category='Indian') }}">Indian</a></li>
+          <li><a href="{{ url_for('menu', category='Desserts') }}">Desserts</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6 class="fh-footer-heading">Contact</h6>
+        <ul class="fh-footer-links">
+          <li><i class="fa-solid fa-location-dot me-2"></i>MG Road, Bengaluru, India</li>
+          <li><i class="fa-solid fa-phone me-2"></i>+91 98765 00000</li>
+          <li><i class="fa-solid fa-envelope me-2"></i>hello@foodiehub.demo</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="fh-footer-rule">
+    <div class="fh-footer-bottom">
+      <span>&copy; {{ current_year }} FoodieHub. Built as a demo project. All rights reserved.</span>
+      <span>Made with <i class="fa-solid fa-heart text-danger"></i> for a great plate of food.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

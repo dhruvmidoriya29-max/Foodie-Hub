@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ item.name }} - FoodieHub Admin{% endblock %}
+
+{% block content %}
+<div class="row g-0">
+  <div class="col-lg-2">
+    {% include 'partials/admin_sidebar.html' %}
+  </div>
+  <div class="col-lg-10">
+    <div class="container-fluid py-4 px-4">
+      <div class="mb-4">
+        <a href="{{ url_for('admin_food') }}" class="text-muted" style="font-size:0.85rem;"><i class="fa-solid fa-arrow-left me-1"></i> Back to Manage Food</a>
+        <h2 class="mb-0 mt-2">Edit Food Item</h2>
+      </div>
+
+      <div class="fh-panel" style="max-width:720px;">
+        <form method="POST" action="{{ url_for('admin_edit_food', food_id=item.id) }}">
+          <div class="mb-3">
+            <label class="form-label">Food Name</label>
+            <input type="text" class="form-control" name="name" value="{{ item.name }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="2">{{ item.description }}</textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Price (&#8377;)</label>
+              <input type="number" step="0.01" min="1" class="form-control" name="price" value="{{ item.price }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Category</label>
+              <select class="form-select" name="category" required>
+                {% for cat in ['Pizza','Burger','Indian','Chinese','South Indian','Desserts','Beverages'] %}
+                <option value="{{ cat }}" {% if item.category==cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Rating (0-5)</label>
+              <input type="number" step="0.1" min="0" max="5" class="form-control" name="rating" value="{{ item.rating }}">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="url" class="form-control" name="image_url" value="{{ item.image_url }}">
+          </div>
+          <div class="d-flex gap-4 mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_veg" id="is_veg" {% if item.is_veg %}checked{% endif %}>
+              <label class="form-check-label" for="is_veg">Vegetarian</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_available" id="is_available" {% if item.is_available %}checked{% endif %}>
+              <label class="form-check-label" for="is_available">Available</label>
+            </div>
+          </div>
+          <button type="submit" class="fh-btn fh-btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i> Save Changes</button>
+          <a href="{{ url_for('admin_food') }}" class="fh-btn fh-btn-ghost">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

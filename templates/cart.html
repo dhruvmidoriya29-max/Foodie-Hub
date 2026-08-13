@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Your Cart - FoodieHub{% endblock %}
+
+{% block content %}
+<section class="fh-section">
+  <div class="container">
+    <div class="mb-4">
+      <span class="fh-eyebrow">Step 1 of 2</span>
+      <h2 class="mb-0">Your Cart</h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div id="cartItemsList">
+          {% if cart_items %}
+            {% for ci in cart_items %}
+            <div class="fh-cart-item" data-item-id="{{ ci.id }}">
+              <img src="{{ ci.food.image_url }}" alt="{{ ci.food.name }}">
+              <div class="flex-grow-1">
+                <h6 class="mb-1" style="font-family:var(--fh-font-display); font-size:1.02rem;">{{ ci.food.name }}</h6>
+                <div class="text-muted" style="font-size:0.82rem;">&#8377;{{ '%.0f'|format(ci.food.price) }} each</div>
+              </div>
+              <div class="fh-qty-control">
+                <button type="button" data-action="decrease" data-item-id="{{ ci.id }}" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+                <span>{{ ci.quantity }}</span>
+                <button type="button" data-action="increase" data-item-id="{{ ci.id }}" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+              </div>
+              <div class="fh-item-subtotal fw-bold" style="width:80px; text-align:right; font-family:var(--fh-font-mono);">&#8377;{{ '%.2f'|format(ci.subtotal) }}</div>
+              <button type="button" class="btn btn-link text-danger" data-action="remove" data-item-id="{{ ci.id }}" aria-label="Remove item"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="fh-empty-state">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <h5>Your cart is empty</h5>
+              <p>Looks like you haven't added anything yet.</p>
+              <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-primary mt-2">Browse Menu</a>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if cart_items %}
+        <form method="POST" action="{{ url_for('clear_cart') }}" class="mt-2">
+          <button type="submit" class="fh-btn fh-btn-ghost fh-btn-sm"><i class="fa-solid fa-broom me-1"></i> Clear Cart</button>
+        </form>
+        {% endif %}
+      </div>
+
+      <div class="col-lg-4">
+        <div class="fh-summary-card">
+          <h5 style="font-family:var(--fh-font-display); margin-bottom:1.25rem;">Order Summary</h5>
+          <div class="fh-summary-row"><span>Subtotal</span><span id="sum-subtotal">&#8377;{{ '%.2f'|format(summary.subtotal) }}</span></div>
+          <div class="fh-summary-row"><span>Delivery Fee</span><span id="sum-delivery">&#8377;{{ '%.2f'|format(summary.delivery_fee) }}</span></div>
+          <div class="fh-summary-row"><span>Tax (5%)</span><span id="sum-tax">&#8377;{{ '%.2f'|format(summary.tax) }}</span></div>
+          <div class="fh-summary-row total"><span>Total</span><span id="sum-total">&#8377;{{ '%.2f'|format(summary.total) }}</span></div>
+          <a href="{{ url_for('checkout') }}" id="proceedCheckoutBtn" class="fh-btn fh-btn-primary fh-btn-block mt-3 {% if summary.subtotal <= 0 %}disabled{% endif %}">
+            Proceed to Checkout <i class="fa-solid fa-arrow-right ms-1"></i>
+          </a>
+          <a href="{{ url_for('menu') }}" class="fh-btn fh-btn-ghost fh-btn-block mt-2">Continue Shopping</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
